@@ -147,6 +147,28 @@ public class RectangleTest {
     }
 
     @Test
+    public void testContainmentSameCorners() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 6, 10);
+        Rectangle r2 = new Rectangle(new Point(0, 3), 3, 10);
+
+        HashMap result = r1.overlap(r2);
+
+        assert(result.containsKey("containment"));
+        assert(result.values().size() == 1);
+    }
+
+    @Test
+    public void testContainmentSameDimensions() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 6, 10);
+        Rectangle r2 = new Rectangle(new Point(0, 0), 6, 10);
+
+        HashMap result = r1.overlap(r2);
+
+        assert(result.containsKey("containment"));
+        assert(result.values().size() == 1);
+    }
+
+    @Test
     public void testProperAdjacent() {
         Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
         Rectangle r2 = new Rectangle(new Point(4, 0), 5, 7);
