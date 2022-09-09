@@ -63,8 +63,11 @@ public class Line {
      * @return Boolean indicating lines overlap
      */
     public Boolean overlap(Line l) {
+        if (this.sameLine(l)) {
+            return true;
+        }
         // if both starts have same x, then they are on the same vertical line
-        if (Double.compare(start.getX(), l.getStart().getX()) == 0) {
+        else if (Double.compare(start.getX(), l.getStart().getX()) == 0) {
             // check if the lines are outside each other/do not overlap
             return !(Double.compare(l.getStart().getY(), end.getY()) >= 0 ||
                     Double.compare(start.getY(), l.getEnd().getY()) >= 0);
@@ -92,6 +95,16 @@ public class Line {
      */
     public Point getEnd() {
         return this.end;
+    }
+
+    /**
+     * Compare this Line to a Line l to determine if they have the same start and end Points
+     * @param l Line to compare to
+     * @return Boolean indicating same or different start, end Points
+     */
+    public Boolean sameLine(Line l) {
+        return (this.start.samePoint(l.getStart()) && this.end.samePoint(l.getEnd())) ||
+                (this.start.samePoint(l.getEnd()) && this.end.samePoint(l.getStart()));
     }
 
 }

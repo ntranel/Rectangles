@@ -73,10 +73,6 @@ public class Rectangle {
                 if (overlap.size() > 0) {
                     return overlap;
                 }
-                // if no adjacency or intersection, rectangles were reverse contained (this within r)
-                else {
-                    result.put("containment", null);
-                }
             }
         }
         return result;
@@ -91,43 +87,63 @@ public class Rectangle {
     private HashMap<String, ArrayList<Point>> adjacentOrIntersect(Rectangle r) {
         HashMap<String, ArrayList<Point>> result = new HashMap<>();
         ArrayList<Point> intersectPoints = new ArrayList<>();
+        Boolean adj = false;
 
         // loop through sides of both rectangles and check if they overlap/intersect
         for (Line compareSide : r.getSides().values()) {
             for (Line side : this.sides.values()) {
-                // if lines overlap, rectangles are adjacent, so we should return with that
+                // if lines overlap, then the rectangles may be adjacent
                 if (side.overlap(compareSide)) {
-                    result.put("adjacent", null);
-                    return result;
+                    adj = true;
                 }
 
-                // if lines do not overlap, then check if they intersect; if they do, add the point to the list
+                // check if lines intersect; if they do, add the point to the list if unique
                 Point p = side.intersection(compareSide);
                 if (p != null) {
-                    intersectPoints.add(p);
+                    Boolean unique = true;
+                    for (Point q : intersectPoints) {
+                        if (q.samePoint(p)) {
+                            unique = false;
+                        }
+                    }
+                    if (unique) {
+                        intersectPoints.add(p);
+                    }
                 }
             }
         }
-        // if there are intersection points, add them to the result
-        if (intersectPoints.size() > 0) {
+        // if there was one intersect point, corners are touching and rectangles are adjacent
+        if (intersectPoints.size() == 1) {
+            result.put("adjacent", null);
+        }
+        // if there was an adjacent line and less than 2 intersect points, rectangle is adjacent
+        else if (adj && intersectPoints.size() <= 2) {
+            result.put("adjacent", null);
+        }
+        // if there were more than 2 intersect points, there was an intersection
+        else if (intersectPoints.size() > 0) {
             result.put("intersect", intersectPoints);
         }
         return result;
     }
 
     /**
-     * Given another Rectangle r, return a Boolean value indicating if r is wholly contained within this Rectangle
+     * Given another Rectangle r, return a Boolean value indicating if r is wholly contained within this Rectangle or vise versa
      * @param r other Rectangle to check for containment
-     * @return Boolean indicating with r is wholly contained within this Rectangle
+     * @return Boolean indicating with r is wholly contained within this Rectangle or vise versa
      */
     private Boolean containment(Rectangle r) {
         // if the start point of this Rectangle is below and left of the start point of r and
         // the topRight of this Rectangle is above and right of the topRight of r, r is contained
-        // within this
-        return Double.compare(start.getX(), r.getVertices().get("bottomLeft").getX()) < 0 &
-            Double.compare(start.getY(), r.getVertices().get("bottomLeft").getY()) < 0 &
-            Double.compare(topRight.getX(), r.getVertices().get("topRight").getX()) > 0 &
-            Double.compare(topRight.getY(), r.getVertices().get("topRight").getY()) > 0;
+        // within this or vise versa
+        return (Double.compare(start.getX(), r.getVertices().get("bottomLeft").getX()) <= 0 &
+            Double.compare(start.getY(), r.getVertices().get("bottomLeft").getY()) <= 0 &
+            Double.compare(topRight.getX(), r.getVertices().get("topRight").getX()) >= 0 &
+            Double.compare(topRight.getY(), r.getVertices().get("topRight").getY()) >= 0) ||
+                (Double.compare(start.getX(), r.getVertices().get("bottomLeft").getX()) >= 0 &
+                        Double.compare(start.getY(), r.getVertices().get("bottomLeft").getY()) >= 0 &
+                        Double.compare(topRight.getX(), r.getVertices().get("topRight").getX()) <= 0 &
+                        Double.compare(topRight.getY(), r.getVertices().get("topRight").getY()) <= 0);
     }
 
     /**

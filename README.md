@@ -2,6 +2,7 @@ Assumptions:
 - Rectangles are always straight up and down, i.e. the slope of the top and bottom lines
 are 0 and slope of the sides are infinite
 - dimensions of rectangle can be partial numbers (assumed doubles)
+- case where rectangles touch at one corner is considered adjacent (separate and intersection don't seem right for this)
 
 No noteworthy external libraries were used - the only data structures used that weren't built
 from scratch were HashMap and ArrayList.

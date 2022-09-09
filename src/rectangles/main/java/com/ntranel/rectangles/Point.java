@@ -33,4 +33,13 @@ public class Point {
         return y;
     }
 
+    /**
+     * Compare this Point to a Point p to determine if they have the same coordinates
+     * @param p Point to compare to
+     * @return Boolean indicating same or different coordinates
+     */
+    public Boolean samePoint(Point p) {
+        return (Double.compare(p.getX(), this.x) == 0 && Double.compare(p.getY(), this.y) == 0);
+    }
+
 }

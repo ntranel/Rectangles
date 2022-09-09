@@ -30,22 +30,6 @@ public class RectangleTest {
     }
 
     @Test
-    public void testCornersTouch() {
-        Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
-        Rectangle r2 = new Rectangle(new Point(4, 5), 2, 3);
-
-        HashMap<String, ArrayList<Point>> result = r1.overlap(r2);
-
-        assert(result.containsKey("intersect"));
-
-        double x = result.get("intersect").get(0).getX();
-        double y = result.get("intersect").get(0).getY();
-
-        assert(Double.compare(x, 4) == 0);
-        assert(Double.compare(y, 5) == 0);
-    }
-
-    @Test
     public void testIntersectCorner() {
         Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
         Rectangle r2 = new Rectangle(new Point(2, 3), 5, 4);
@@ -85,6 +69,57 @@ public class RectangleTest {
         assert(Double.compare(y2, 1) == 0);
     }
 
+    @Test
+    public void testInsideAdjacentIntersect() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
+        Rectangle r2 = new Rectangle(new Point(0, 2), 5, 2);
+
+        HashMap<String, ArrayList<Point>> result = r1.overlap(r2);
+
+        assert(result.containsKey("intersect"));
+
+        double x1 = result.get("intersect").get(0).getX();
+        double y1 = result.get("intersect").get(0).getY();
+        double x2 = result.get("intersect").get(1).getX();
+        double y2 = result.get("intersect").get(1).getY();
+        double x3 = result.get("intersect").get(2).getX();
+        double y3 = result.get("intersect").get(2).getY();
+
+        assert(Double.compare(x1, 0) == 0);
+        assert(Double.compare(y1, 5) == 0);
+        assert(Double.compare(x2, 0) == 0);
+        assert(Double.compare(y2, 2) == 0);
+        assert(Double.compare(x3, 2) == 0);
+        assert(Double.compare(y3, 5) == 0);
+    }
+
+    @Test
+    public void testStackIntersect() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
+        Rectangle r2 = new Rectangle(new Point(0, 2), 5, 4);
+
+        HashMap<String, ArrayList<Point>> result = r1.overlap(r2);
+
+        assert(result.containsKey("intersect"));
+
+        double x1 = result.get("intersect").get(0).getX();
+        double y1 = result.get("intersect").get(0).getY();
+        double x2 = result.get("intersect").get(1).getX();
+        double y2 = result.get("intersect").get(1).getY();
+        double x3 = result.get("intersect").get(2).getX();
+        double y3 = result.get("intersect").get(2).getY();
+        double x4 = result.get("intersect").get(3).getX();
+        double y4 = result.get("intersect").get(3).getY();
+
+        assert(Double.compare(x1, 0) == 0);
+        assert(Double.compare(y1, 5) == 0);
+        assert(Double.compare(x2, 0) == 0);
+        assert(Double.compare(y2, 2) == 0);
+        assert(Double.compare(x3, 4) == 0);
+        assert(Double.compare(y3, 2) == 0);
+        assert(Double.compare(x4, 4) == 0);
+        assert(Double.compare(y4, 5) == 0);
+    }
 
     @Test
     public void testContainment() {
@@ -98,6 +133,17 @@ public class RectangleTest {
 
         result = r2.overlap(r1);
         assert(result.containsKey("containment"));
+    }
+
+    @Test
+    public void testContainmentSameStart() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 6, 10);
+        Rectangle r2 = new Rectangle(new Point(0, 0), 2, 3);
+
+        HashMap result = r1.overlap(r2);
+
+        assert(result.containsKey("containment"));
+        assert(result.values().size() == 1);
     }
 
     @Test
@@ -142,6 +188,16 @@ public class RectangleTest {
 
         assert(result.containsKey("adjacent"));
         assert(result.values().size() == 1);
+    }
+
+    @Test
+    public void testCornersTouch() {
+        Rectangle r1 = new Rectangle(new Point(0,0), 5, 4);
+        Rectangle r2 = new Rectangle(new Point(4, 5), 2, 3);
+
+        HashMap<String, ArrayList<Point>> result = r1.overlap(r2);
+
+        assert(result.containsKey("adjacent"));
     }
 
 }
